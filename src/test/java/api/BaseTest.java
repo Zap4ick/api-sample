@@ -44,7 +44,7 @@ public abstract class BaseTest {
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        restClient = new RestClient();
+        restClient = new RestClient(TestConfig.getBaseUrl());
     }
 
     @AfterMethod(alwaysRun = true)

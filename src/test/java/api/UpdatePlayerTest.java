@@ -21,6 +21,8 @@ public class UpdatePlayerTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdatePlayerTest.class);
 
+    private static final Long NON_EXISTING_ID = 999999L;
+
     // region Positive Tests
 
     @DataProvider(name = "privilegedUserUpdatesOneField")
@@ -209,7 +211,7 @@ public class UpdatePlayerTest extends BaseTest {
         log(logger, "Step: Attempt to update non-existing player id");
         var randomScreenName = TestDataGenerator.getRandomPlayerDetails().screenName();
         var updateRequest = new PlayerUpdateRequestDto(null, null, null, null, null, randomScreenName);
-        var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), 99999999L, updateRequest);
+        var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), NON_EXISTING_ID, updateRequest);
 
         log(logger, "Step: Assert update rejected");
         assertEquals(response.getStatusCode(), 404, "Non-existing player id should be rejected");
@@ -285,7 +287,7 @@ public class UpdatePlayerTest extends BaseTest {
         var playerCreateResponse = createPlayerAndRegister(TestConfig.getSupervisorLogin(), playerDetails);
 
         log(logger, "Step: Attempt to update with non-updatable field (id)");
-        var updateBody = Map.of("id", 99999999L);
+        var updateBody = Map.of("id", NON_EXISTING_ID);
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateBody);
 
         log(logger, "Step: Assert update does not cause error code");

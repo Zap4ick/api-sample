@@ -14,6 +14,8 @@ public class RetrievePlayerTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RetrievePlayerTest.class);
 
+    private static final Long NON_EXISTING_ID = 999999L;
+
     // region Positive Tests
 
     @Test(description = "Positive: Get player data by ID")
@@ -55,8 +57,7 @@ public class RetrievePlayerTest extends BaseTest {
     @Test(description = "Negative: Get player with non-existing ID")
     public void getNonExistingPlayerTest() {
         log(logger, "Step: Attempt to retrieve player with non-existing ID");
-        var nonExistingId = 99999999L;
-        var response = restClient.getPlayer(nonExistingId);
+        var response = restClient.getPlayer(NON_EXISTING_ID);
 
         log(logger, "Step: Assert retrieval rejected with 404 Not Found");
         assertEquals(response.getStatusCode(), 404, "Getting non-existing player should return not found");

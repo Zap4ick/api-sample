@@ -14,6 +14,8 @@ public class DeletePlayerTest extends BaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DeletePlayerTest.class);
 
+    private static final Long NON_EXISTING_ID = 999999L;
+
     // region Positive Tests
 
     @DataProvider(name = "deletersAndRolesToDelete")
@@ -130,8 +132,7 @@ public class DeletePlayerTest extends BaseTest {
     @Test(description = "Negative: Delete a player that does not exist")
     public void deleteNonExistingPlayerTest() {
         log(logger, "Step: Attempt to delete non-existing player");
-        var nonExistingId = 99999999L;
-        var deleteResponse = restClient.deletePlayer(TestConfig.getSupervisorLogin(), nonExistingId);
+        var deleteResponse = restClient.deletePlayer(TestConfig.getSupervisorLogin(), NON_EXISTING_ID);
 
         log(logger, "Step: Assert deletion rejected with 404 Not Found");
         assertEquals(deleteResponse.getStatusCode(), 404, "Deleting non-existing player should return not found");

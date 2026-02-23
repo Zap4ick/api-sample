@@ -26,9 +26,9 @@ public class RestClient {
             .logConfig(LogConfig.logConfig()
                     .enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL));
 
-    public RestClient() {
+    public RestClient(String baseUrl) {
         this.spec = new RequestSpecBuilder()
-                .setBaseUri(TestConfig.getBaseUrl())
+                .setBaseUri(baseUrl)
                 .setConfig(DEFAULT_REST_ASSURED_CONFIG)
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
