@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Player API Suite" parallel="methods" thread-count="3">
+    <test name="Create Player Tests">
+        <classes>
+            <class name="api.CreatePlayerTest"/>
+        </classes>
+    </test>
+    <test name="Retrieve Player Tests">
+        <classes>
+            <class name="api.RetrievePlayerTest"/>
+        </classes>
+    </test>
+    <test name="Update Player Tests">
+        <classes>
+            <class name="api.UpdatePlayerTest"/>
+        </classes>
+    </test>
+    <test name="Delete Player Tests">
+        <classes>
+            <class name="api.DeletePlayerTest"/>
+        </classes>
+    </test>
+    <test name="Get All Players Tests">
+        <classes>
+            <class name="api.GetAllPlayersTest"/>
+        </classes>
+    </test>
+</suite>
