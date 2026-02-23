@@ -34,9 +34,16 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
         run: ./gradlew testFull
 
+      - name: Install Allure CLI (optional)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
+        run: |
+          curl -fsSL -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.37.0/allure-2.37.0.tgz
+          tar -xzf allure.tgz
+          echo "$(pwd)/allure-2.29.0/bin" >> $GITHUB_PATH
+
       - name: Generate Allure report (optional)
         if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
-        run: ./gradlew allureReport
+        run: allure generate build/allure-results -o build/allure-report --clean
 
       - name: Upload Allure report (optional)
         if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
