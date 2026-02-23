@@ -109,3 +109,8 @@ allure generate build/allure-results -o build/allure-report
 ```
 The report will be generated in `build/allure-report/` (use this if you prefer to open the report manually).
 
+### GitHub Actions (full suite + Allure artifacts)
+You can run the full suite and generate Allure artifacts from GitHub Actions:
+1. Go to **Actions → Build → Run workflow**
+2. Set `run_tests` to `true`
+3. After completion, download `allure-report` and `allure-results` artifacts

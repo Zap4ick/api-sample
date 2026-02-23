@@ -2,8 +2,14 @@ name: Build
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_tests:
+        description: "Run full test suite (testFull)"
+        required: false
+        default: "false"
 
 jobs:
   build:
@@ -24,3 +30,24 @@ jobs:
       - name: Build (no tests)
         run: ./gradlew assemble
 
+      - name: Run full test suite (optional)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
+        run: ./gradlew testFull
+
+      - name: Generate Allure report (optional)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
+        run: ./gradlew allureReport
+
+      - name: Upload Allure report (optional)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: build/allure-report
+
+      - name: Upload Allure results (optional)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_tests == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: build/allure-results
