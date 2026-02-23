@@ -53,4 +53,8 @@ allure {
             }
         }
     }
+
+    report {
+        singleFile.set(true)
+    }
 }
