@@ -9,6 +9,10 @@ This project contains TestNG-based API tests for player management endpoints. Te
 - **Java:** 21+
 - **Build Tool:** Gradle 9.2+
 
+## Configuration
+- Update `src/test/resources/test.properties` with your API server URL in `base.url` property
+- For GitHub Actions: add `BASE_URL` secret in repository settings
+
 ## Test Coverage (By Class)
 - `CreatePlayerTest`
   - Positive: supervisor/admin can create players (supervisor→admin, admin→user)

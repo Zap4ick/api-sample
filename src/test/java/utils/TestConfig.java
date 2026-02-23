@@ -19,6 +19,10 @@ public class TestConfig {
     }
 
     public static String getBaseUrl() {
+        String baseUrl = System.getenv("BASE_URL");
+        if (baseUrl != null && !baseUrl.isEmpty()) {
+            return baseUrl;
+        }
         return PROPERTIES.getProperty("base.url");
     }
 
