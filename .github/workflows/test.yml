@@ -1,0 +1,65 @@
+name: Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Test suite to run"
+        required: true
+        default: "testFull"
+        type: choice
+        options:
+          - testFull
+          - testSanity
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Run test suite
+        run: ./gradlew ${{ inputs.suite }}
+
+      - name: Install Allure CLI
+        if: ${{ always() }}
+        run: |
+          curl -fsSL -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.37.0/allure-2.37.0.tgz
+          tar -xzf allure.tgz
+          echo "$(pwd)/allure-2.37.0/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure report
+        if: ${{ always() }}
+        run: allure generate build/allure-results -o build/allure-report --clean --single-file
+
+      - name: Upload Allure report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: build/allure-report
+
+      - name: Upload Allure results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: build/allure-results
+
+
