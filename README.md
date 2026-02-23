@@ -13,6 +13,12 @@ This project contains TestNG-based API tests for player management endpoints. Te
 - Update `src/test/resources/test.properties` with your API server URL in `base.url` property
 - For GitHub Actions: add `BASE_URL` secret in repository settings
 
+## GitHub Actions (full suite + Allure artifacts)
+You can run the full suite and generate Allure artifacts from GitHub Actions:
+1. Go to **Actions → Build & Run tests (optional) → Run workflow**
+2. Set `run_tests` to `true`
+3. After completion, download `allure-report` and `allure-results` artifacts
+
 ## Test Coverage (By Class)
 - `CreatePlayerTest`
   - Positive: supervisor/admin can create players (supervisor→admin, admin→user)
@@ -112,9 +118,3 @@ This generates the report and opens it in your default browser. The report is se
 allure generate build/allure-results -o build/allure-report
 ```
 The report will be generated in `build/allure-report/` (use this if you prefer to open the report manually).
-
-### GitHub Actions (full suite + Allure artifacts)
-You can run the full suite and generate Allure artifacts from GitHub Actions:
-1. Go to **Actions → Build & Run tests (optional) → Run workflow**
-2. Set `run_tests` to `true`
-3. After completion, download `allure-report` and `allure-results` artifacts
