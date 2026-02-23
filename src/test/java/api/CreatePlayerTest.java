@@ -12,6 +12,7 @@ import org.testng.asserts.SoftAssert;
 import utils.TestConfig;
 import utils.TestDataGenerator;
 
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
@@ -111,7 +112,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, String.format("Step: Assert creation rejected for %s", description));
-        assertEquals(response.getStatusCode(), 400, String.format("Failed for: %s", description));
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, String.format("Failed for: %s", description));
     }
 
     @Test(description = "Negative: Regular user cannot create other players")
@@ -126,7 +127,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, "Step: Assert creation rejected with 403 Forbidden");
-        assertEquals(response.getStatusCode(), 403, "Regular user should not have permissions to create players");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, "Regular user should not have permissions to create players");
     }
 
     @DataProvider(name = "invalidPasswordProvider")
@@ -147,7 +148,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, "Step: Assert creation rejected");
-        assertEquals(response.getStatusCode(), 400, String.format("Invalid password should be rejected: %s", reason));
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, String.format("Invalid password should be rejected: %s", reason));
     }
 
     @Test(description = "Negative: Gender must be 'male' or 'female'")
@@ -167,7 +168,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, "Step: Assert creation rejected");
-        assertEquals(response.getStatusCode(), 400, "Invalid gender should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Invalid gender should be rejected");
     }
 
     @Test(description = "Negative: Cannot create a player with duplicate login")
@@ -183,7 +184,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, "Step: Assert creation rejected");
-        assertEquals(response.getStatusCode(), 400, "Second create with duplicate login should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Second create with duplicate login should be rejected");
 
         log(logger, "Step: Assert first player data unchanged");
         var actualPlayer = getPlayer(playerCreateResponse.id());
@@ -207,7 +208,7 @@ public class CreatePlayerTest extends BaseTest {
         tryAddToDeletingQueue(response);
 
         log(logger, "Step: Assert creation rejected");
-        assertEquals(response.getStatusCode(), 400, "Second create with duplicate screenName should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Second create with duplicate screenName should be rejected");
 
         log(logger, "Step: Assert first player data unchanged");
         var actualPlayer = getPlayer(playerCreateResponse.id());

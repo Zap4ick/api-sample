@@ -9,16 +9,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TestDataGenerator {
 
-    // Age boundaries
     public static final int MIN_AGE = 17;
     public static final int MAX_AGE = 59;
 
-    // Password boundaries
     public static final int MIN_PASSWORD_LENGTH = 7;
     public static final int MAX_PASSWORD_LENGTH = 15;
     public static final int DEFAULT_PASSWORD_LENGTH = 10;
 
-    // Password character set
     private static final String PASSWORD_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static String getRandomLogin() {

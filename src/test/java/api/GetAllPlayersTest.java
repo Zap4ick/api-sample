@@ -10,6 +10,8 @@ import org.testng.asserts.SoftAssert;
 import utils.TestConfig;
 import utils.TestDataGenerator;
 
+import java.net.HttpURLConnection;
+
 import static org.testng.Assert.*;
 
 public class GetAllPlayersTest extends BaseTest {
@@ -126,12 +128,8 @@ public class GetAllPlayersTest extends BaseTest {
         var response = restClient.getAllPlayers();
 
         log(logger, "Step: Assert access is forbidden");
-        assertEquals(response.getStatusCode(), 403, "Regular user should not be able to retrieve all players");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, "Regular user should not be able to retrieve all players");
     }
 
     // endregion
 }
-
-
-
-

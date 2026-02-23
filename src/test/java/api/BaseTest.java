@@ -15,6 +15,7 @@ import org.testng.asserts.SoftAssert;
 import utils.RestClient;
 import utils.TestConfig;
 
+import java.net.HttpURLConnection;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -64,7 +65,7 @@ public abstract class BaseTest {
      */
     protected PlayerCreateResponseDto createPlayerAndRegister(String editor, PlayerDetailsDto request) {
         var response = restClient.createPlayer(editor, request);
-        response.then().statusCode(200);
+        response.then().statusCode(HttpURLConnection.HTTP_OK);
         long id = response.jsonPath().getLong("id");
         playersToDelete.get().add(id);
         return response.as(PlayerCreateResponseDto.class);
@@ -75,16 +76,8 @@ public abstract class BaseTest {
      */
     protected PlayerGetByPlayerIdResponseDto getPlayer(Object playerId) {
         var response = restClient.getPlayer(playerId);
-        response.then().statusCode(200);
+        response.then().statusCode(HttpURLConnection.HTTP_OK);
         return as(response, PlayerGetByPlayerIdResponseDto.class);
-    }
-
-    /**
-     * A helper method for positive delete scenarios.
-     */
-    protected void deletePlayer(String editor, Long playerId) {
-        var response = restClient.deletePlayer(editor, playerId);
-        response.then().statusCode(204);
     }
 
     /**
@@ -92,7 +85,7 @@ public abstract class BaseTest {
      */
     protected PlayerUpdateResponseDto updatePlayer(String editor, Long playerId, PlayerUpdateRequestDto request) {
         var response = restClient.updatePlayer(editor, playerId, request);
-        response.then().statusCode(200);
+        response.then().statusCode(HttpURLConnection.HTTP_OK);
         return as(response, PlayerUpdateResponseDto.class);
     }
 
@@ -101,7 +94,7 @@ public abstract class BaseTest {
      */
     protected PlayerGetAllResponseDto getAllPlayers() {
         var response = restClient.getAllPlayers();
-        response.then().statusCode(200);
+        response.then().statusCode(HttpURLConnection.HTTP_OK);
         return as(response, PlayerGetAllResponseDto.class);
     }
 

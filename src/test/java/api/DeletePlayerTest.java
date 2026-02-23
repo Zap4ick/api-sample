@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import utils.TestConfig;
 import utils.TestDataGenerator;
 
+import java.net.HttpURLConnection;
+
 import static org.testng.Assert.assertEquals;
 
 public class DeletePlayerTest extends BaseTest {
@@ -37,11 +39,11 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(deleterLogin, playerCreateResponse.id());
 
         log(logger, "Step: Assert player deleted with status 204");
-        assertEquals(deleteResponse.getStatusCode(), 204, "Delete should return 204 No Content");
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_NO_CONTENT, "Delete should return 204 No Content");
 
         log(logger, "Step: Assert player no longer exists");
         var getResponse = restClient.getPlayer(playerCreateResponse.id());
-        assertEquals(getResponse.getStatusCode(), 404, "Get should return not found after delete");
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_NOT_FOUND, "Get should return not found after delete");
 
         playersToDelete.get().remove(playerCreateResponse.id());
     }
@@ -56,11 +58,11 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(adminCreated.login(), adminCreated.id());
 
         log(logger, "Step: Assert admin deleted with status 204");
-        assertEquals(deleteResponse.getStatusCode(), 204, "Delete should return 204 No Content");
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_NO_CONTENT, "Delete should return 204 No Content");
 
         log(logger, "Step: Assert admin no longer exists");
         var getResponse = restClient.getPlayer(adminCreated.id());
-        assertEquals(getResponse.getStatusCode(), 404, "Admin should not exist after self-delete");
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_NOT_FOUND, "Admin should not exist after self-delete");
 
         playersToDelete.get().remove(adminCreated.id());
     }
@@ -91,12 +93,12 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(actorCreated.login(), protectedCreated.id());
 
         log(logger, "Step: Assert deletion rejected with 403 Forbidden");
-        assertEquals(deleteResponse.getStatusCode(), 403,
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN,
                 String.format("Delete should be forbidden for %s on %s user", actorRole, protectedRole));
 
         log(logger, String.format("Step: Assert %s user still exists", protectedRole));
         var getResponse = restClient.getPlayer(protectedCreated.id());
-        assertEquals(getResponse.getStatusCode(), 200,
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_OK,
                 String.format("%s user should still exist after forbidden delete attempt", protectedRole));
     }
 
@@ -121,12 +123,12 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(actorCreated.login(), supervisorId);
 
         log(logger, "Step: Assert deletion rejected with 403 Forbidden");
-        assertEquals(deleteResponse.getStatusCode(), 403,
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN,
                 String.format("Delete should be forbidden for %s on supervisor user", actorRole));
 
         log(logger, "Step: Assert supervisor still exists");
         var getResponse = restClient.getPlayer(supervisorId);
-        assertEquals(getResponse.getStatusCode(), 200, "Supervisor should still exist after forbidden delete attempt");
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_OK, "Supervisor should still exist after forbidden delete attempt");
     }
 
     @Test(description = "Negative: Delete a player that does not exist")
@@ -135,7 +137,7 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(TestConfig.getSupervisorLogin(), NON_EXISTING_ID);
 
         log(logger, "Step: Assert deletion rejected with 404 Not Found");
-        assertEquals(deleteResponse.getStatusCode(), 404, "Deleting non-existing player should return not found");
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_NOT_FOUND, "Deleting non-existing player should return not found");
     }
 
     @Test(description = "Negative: Send invalid data type for playerId")
@@ -144,7 +146,7 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(TestConfig.getSupervisorLogin(), "not-a-number");
 
         log(logger, "Step: Assert deletion rejected with 400 Bad Request");
-        assertEquals(deleteResponse.getStatusCode(), 400, "Invalid playerId type should be rejected");
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Invalid playerId type should be rejected");
     }
 
     @Test(description = "Negative: Regular user cannot delete themselves")
@@ -157,11 +159,11 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(userCreated.login(), userCreated.id());
 
         log(logger, "Step: Assert self-deletion rejected with 403 Forbidden");
-        assertEquals(deleteResponse.getStatusCode(), 403, String.format("Self-delete should be forbidden for role: %s", Role.USER));
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, String.format("Self-delete should be forbidden for role: %s", Role.USER));
 
         log(logger, "Step: Assert user still exists");
         var getResponse = restClient.getPlayer(userCreated.id());
-        assertEquals(getResponse.getStatusCode(), 200, String.format("User should still exist after forbidden self-delete role: %s", Role.USER));
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_OK, String.format("User should still exist after forbidden self-delete role: %s", Role.USER));
     }
 
     @Test(description = "Negative: Supervisor cannot delete themselves")
@@ -172,11 +174,11 @@ public class DeletePlayerTest extends BaseTest {
         var deleteResponse = restClient.deletePlayer(supervisorLogin, supervisorId);
 
         log(logger, "Step: Assert self-deletion rejected with 403 Forbidden");
-        assertEquals(deleteResponse.getStatusCode(), 403, String.format("Self-delete should be forbidden for role: %s", Role.SUPERVISOR));
+        assertEquals(deleteResponse.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, String.format("Self-delete should be forbidden for role: %s", Role.SUPERVISOR));
 
         log(logger, "Step: Assert supervisor still exists");
         var getResponse = restClient.getPlayer(supervisorId);
-        assertEquals(getResponse.getStatusCode(), 200, String.format("Supervisor should still exist after forbidden self-delete role: %s", Role.SUPERVISOR));
+        assertEquals(getResponse.getStatusCode(), HttpURLConnection.HTTP_OK, String.format("Supervisor should still exist after forbidden self-delete role: %s", Role.SUPERVISOR));
     }
 
     // endregion

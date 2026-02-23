@@ -13,6 +13,7 @@ import org.testng.asserts.SoftAssert;
 import utils.TestConfig;
 import utils.TestDataGenerator;
 
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 import static org.testng.Assert.assertEquals;
@@ -184,7 +185,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Updating login should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Updating login should be rejected");
     }
 
     @Test(description = "Negative: Regular user cannot update another player's data")
@@ -203,10 +204,10 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(firstUserCreated.login(), secondUserCreated.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 403, "Regular user should not update another player's data");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, "Regular user should not update another player's data");
     }
 
-    @Test(description = "Negative: Update non-existing player id")
+    @Test(description = "Negative: Update player with non-existing ID")
     public void updateNonExistingPlayerIdTest() {
         log(logger, "Step: Attempt to update non-existing player id");
         var randomScreenName = TestDataGenerator.getRandomPlayerDetails().screenName();
@@ -214,10 +215,10 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), NON_EXISTING_ID, updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 404, "Non-existing player id should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_NOT_FOUND, "Non-existing player id should be rejected");
     }
 
-    @Test(description = "Negative: Update null player id")
+    @Test(description = "Negative: Update player with null ID")
     public void updateNullPlayerIdTest() {
         log(logger, "Step: Attempt to update with null player id");
         var randomScreenName = TestDataGenerator.getRandomPlayerDetails().screenName();
@@ -225,10 +226,10 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayerWithRawId(TestConfig.getSupervisorLogin(), null, updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Null player id should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Null player id should be rejected");
     }
 
-    @Test(description = "Negative: Invalid data type in update (age as string)")
+    @Test(description = "Negative: Update player with invalid age type (string instead of integer)")
     public void updateWithInvalidAgeTypeTest() {
         log(logger, "Step: Create a player");
         var playerDetails = TestDataGenerator.getRandomPlayerDetails(Role.USER);
@@ -239,7 +240,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateBody);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Invalid age type should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Invalid age type should be rejected");
     }
 
     @DataProvider(name = "invalidUpdateBoundaries")
@@ -253,7 +254,7 @@ public class UpdatePlayerTest extends BaseTest {
         };
     }
 
-    @Test(description = "Negative: Update with boundary violations", dataProvider = "invalidUpdateBoundaries")
+    @Test(description = "Negative: Update player with boundary violations", dataProvider = "invalidUpdateBoundaries")
     public void updateWithBoundaryViolationsTest(PlayerUpdateRequestDto updateRequest, String testCase) {
         log(logger, "Step: Create a player");
         var playerDetails = TestDataGenerator.getRandomPlayerDetails(Role.USER);
@@ -263,7 +264,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, String.format("Out-of-bound update should be rejected for: %s", testCase));
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, String.format("Out-of-bound update should be rejected for: %s", testCase));
     }
 
     @Test(description = "Negative: Update player with invalid gender")
@@ -277,7 +278,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateBody);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Invalid gender should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Invalid gender should be rejected");
     }
 
     @Test(description = "Negative: Update player with non-updatable field (id) in request")
@@ -291,7 +292,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), playerCreateResponse.id(), updateBody);
 
         log(logger, "Step: Assert update does not cause error code");
-        assertEquals(response.getStatusCode(), 200, "Update with non-updatable field should be handled gracefully");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_OK, "Update with non-updatable field should be handled gracefully");
 
         log(logger, "Step: Assert retrieved player data unchanged");
         var updatedPlayer = getPlayer(playerCreateResponse.id());
@@ -321,7 +322,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), secondPlayer.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Update with duplicate login should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Update with duplicate login should be rejected");
 
         log(logger, "Step: Assert second player data unchanged");
         var updatedSecondPlayer = getPlayer(secondPlayer.id());
@@ -346,7 +347,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(TestConfig.getSupervisorLogin(), secondPlayer.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 400, "Update with duplicate screenName should be rejected");
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_BAD_REQUEST, "Update with duplicate screenName should be rejected");
 
         log(logger, "Step: Assert second player data unchanged");
         var updatedSecondPlayer = getPlayer(secondPlayer.id());
@@ -375,7 +376,7 @@ public class UpdatePlayerTest extends BaseTest {
         var response = restClient.updatePlayer(userCreated.login(), userCreated.id(), updateRequest);
 
         log(logger, "Step: Assert update rejected");
-        assertEquals(response.getStatusCode(), 403, String.format("Role %s should not be able to change their own role to %s", currentRole, targetRole));
+        assertEquals(response.getStatusCode(), HttpURLConnection.HTTP_FORBIDDEN, String.format("Role %s should not be able to change their own role to %s", currentRole, targetRole));
 
         log(logger, String.format("Step: Assert %s role remains unchanged", currentRole));
         var updatedUser = getPlayer(userCreated.id());
