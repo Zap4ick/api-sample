@@ -1,6 +1,6 @@
 # API Sample Test Suite
 
-[![Build](https://github.com/Zap4ick/api-sample/actions/workflows/build.yml/badge.svg)](https://github.com/Zap4ick/api-sample/actions/workflows/build.yml)
+[![Build](https://github.com/Zap4ick/api-sample/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Zap4ick/api-sample/actions/workflows/build.yml)
 
 ## Overview
 This project contains TestNG-based API tests for player management endpoints. Tests are organized by endpoint and cover positive and negative scenarios.
