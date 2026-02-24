@@ -7,6 +7,7 @@ import java.util.Properties;
 public class TestConfig {
     private static final Properties PROPERTIES = new Properties();
     private static final String BASE_URL_ENV_VAR_KEY = "BASE_URL";
+    private static final String PROPERTIES_FILE_NAME = "test.properties";
 
     private enum ConfigKey {
         BASE_URL("base.url"),
@@ -27,9 +28,9 @@ public class TestConfig {
     }
 
     static {
-        try (InputStream is = TestConfig.class.getClassLoader().getResourceAsStream("test.properties")) {
+        try (InputStream is = TestConfig.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME)) {
             if (is == null) {
-                throw new RuntimeException("No file test.properties in resources!");
+                throw new RuntimeException("No file %s in resources!".formatted(PROPERTIES_FILE_NAME));
             }
             PROPERTIES.load(is);
         } catch (IOException e) {
